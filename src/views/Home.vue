@@ -2,7 +2,7 @@
  * @Description: 
  * @Author: BMB
  * @Date: 2020-12-24 11:11:51
- * @LastEditTime: 2020-12-24 19:06:40
+ * @LastEditTime: 2020-12-29 11:33:02
  * @LastEditors: BMB
 -->
 <template>
@@ -38,11 +38,6 @@
           style="background: rgba(153, 204, 153, 0.2); padding: 0px 10px"
         >
           <span>{{ curAlgorim }}</span>
-          <!-- <a-icon
-            class="trigger"
-            :type="collapsed ? 'menu-unfold' : 'menu-fold'"
-            @click="() => (collapsed = !collapsed)"
-          /> -->
         </a-layout-header>
         <a-layout-content
           :style="{
@@ -52,24 +47,74 @@
             minHeight: '280px',
           }"
         >
-          Content
+          <a-form
+            :form="form"
+            :label-col="{ span: 1 }"
+            :wrapper-col="{ span: 23 }"
+          >
+            <a-form-item label="参数">
+              <a-input
+                v-decorator="[
+                  'note',
+                  {
+                    rules: [
+                      { required: true, message: 'Please input your note!' },
+                    ],
+                  },
+                ]"
+              />
+            </a-form-item>
+            <a-form-item label="程序">
+              <!-- <ACodeMirror /> -->
+            </a-form-item>
+            <a-form-item label="结果">
+              <a-input
+                v-decorator="[
+                  'note',
+                  {
+                    rules: [
+                      { required: true, message: 'Please input your note!' },
+                    ],
+                  },
+                ]"
+              />
+            </a-form-item>
+          </a-form>
+          <!-- <codemirror v-model="code" :options="cmOptions"></codemirror> -->
         </a-layout-content>
       </a-layout>
     </a-layout>
   </div>
 </template>
 
-<script>
+<script id="script">
 import GCONF from "./globle.config";
+// import CodeMirror from "codemirror";
+// import ACodeMirror from "../components/ACodeMirror";
+import AlgorithmEngine from "../components/AlgorithmEngine";
+
 export default {
   name: "Home",
-  components: {},
+  components: {
+    // ACodeMirror,
+  },
   data() {
     return {
       collapsed: false,
       curNav: null,
       subNavs: [],
       navs: [],
+      form: null,
+      code: "const a = 1",
+      cmOptions: {
+        // codemirror options
+        tabSize: 4,
+        mode: "text/javascript",
+        theme: "base16-dark",
+        lineNumbers: true,
+        line: true,
+        // more codemirror options, 更多 codemirror 的高级配置...
+      },
       // curAlgorim: "",
     };
   },
@@ -83,6 +128,9 @@ export default {
   },
   mounted() {
     this.iniSubNavs();
+    this.doTest();
+    // cm.foldCode(CodeMirror.Pos(13, 0));
+    // console.log(cm);
   },
   methods: {
     iniParams() {
@@ -97,6 +145,31 @@ export default {
         nav.subNavs = GCONF.algorithms.filter((a) => a.group == nav.code);
         return nav;
       });
+    },
+    doCodemirror() {
+      // var sc = document.getElementById("script");
+      // var te = document.getElementById("code");
+      // // te.value = (sc.textContent || sc.innerText || sc.innerHTML).replace(
+      // //   /^\s*/,
+      // //   ""
+      // // );
+      // // console.log("this.$refs.code", this.$refs.code);
+      // let cm = CodeMirror.fromTextArea(te, {
+      //   lineNumbers: true,
+      //   mode: "javascript",
+      //   lineWrapping: true,
+      //   // mode: { name: "javascript", globalVars: true },
+      //   // foldGutter: true,
+      //   // theme: "night",
+      //   // gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+      // });
+    },
+    doTest() {
+      let data = [7, 9, 2, 6, 5, 8];
+      // let result = AlgorithmEngine.Sort.normalSort(data);
+      AlgorithmEngine.Sort.insertSort(data);
+      console.log(data);
+      // console.log(result);
     },
   },
 };
@@ -154,6 +227,9 @@ export default {
       margin: 0px 16px;
       text-align: left;
       font-size: 18px;
+    }
+    .ant-layout-content {
+      overflow-y: auto;
     }
   }
 }
